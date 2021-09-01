@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const width = 4;
   const grid = document.querySelector(".grid");
   const timeCompleted = document.querySelector('#time-completed');
+  const result = document.querySelector('#result')
   let chosenCards = [];
   let time = 0;
   let timeInterval;
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < width * width; i++) {
       const card = document.createElement("div");
-      card.innerHTML = numbers[i];
+      // card.innerHTML = numbers[i];
       card.setAttribute("data-index", i);
       card.setAttribute("data-value", numbers[i]);
       card.classList.add('default');
@@ -32,13 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const index = card.getAttribute("data-index");
     const value = card.getAttribute("data-value");
 
-    if(card.classList.contains('opened')) return;
+    if (card.classList.contains('opened')) return;
 
     if (chosenCards.length == 1 && chosenCards[0] == index) return;
 
     if (chosenCards.length <= 1) {
       chosenCards.push(index);
-      card.classList.add('flip-'+value);
+      card.classList.add('flip-' + value);
     }
 
     if (chosenCards.length == 2) {
@@ -51,13 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (firstCardValue === secondCardValue) {
           chosenCards = [];
-          cards[firstCardIndex].innerHTML = firstCardValue;
-          cards[secondCardIndex].innerHTML = secondCardValue;
-          cards[firstCardIndex].classList.add('flip-'+firstCardValue);
-          cards[secondCardIndex].classList.add('flip-'+secondCardValue);
+          cards[firstCardIndex].classList.add('flip-' + firstCardValue);
+          cards[secondCardIndex].classList.add('flip-' + secondCardValue);
 
           cards[firstCardIndex].classList.add('opened');
           cards[secondCardIndex].classList.add('opened');
+          isGameOver();
         } else {
           chosenCards = [];
           cards[firstCardIndex].className = "default";
@@ -70,16 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function isGameOver() {
-    isGameOver = true;
-    squares.forEach((item) => {
-      if (item.classList.contains("bomb")) {
-        item.classList.add('blast');
-      }
-    });
-    result.innerHTML = "You loose the game. Better luck next time!";
-    clearInterval(timeInterval);
+    const openedCards = cards.filter(c => c.classList.contains('opened')).length;
+    if (openedCards == width * width) {
+      result.innerHTML = "Congratulations, You won the game!";
+      clearInterval(timeInterval);
+    }
   }
-
 
   function init() {
     createBoard();
