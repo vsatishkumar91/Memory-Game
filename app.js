@@ -2,9 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const width = 4;
   const grid = document.querySelector(".grid");
   const timeCompleted = document.querySelector('#time-completed');
+  const bestTimediv = document.querySelector('#best-time');
   const result = document.querySelector('#result')
   let chosenCards = [];
   let time = 0;
+  let bestTime = 100000;
   let timeInterval;
   const cards = [];
 
@@ -74,15 +76,33 @@ document.addEventListener("DOMContentLoaded", () => {
     if (openedCards == width * width) {
       result.innerHTML = "Congratulations, You won the game!";
       clearInterval(timeInterval);
+      if(bestTime > time) {
+        bestTimediv.innerHTML = time;
+        localStorage.setItem("bestTime", JSON.stringify(bestTime))
+      }
+    }
+  }
+
+  function readBestTime() {
+    bestTime = localStorage.getItem("bestTime");
+    if (bestTime === null) {
+      bestTime = 100000;
+      localStorage.setItem("bestTime", JSON.stringify(bestTime))
+      bestTimediv.innerHTML = bestTime;
+    }
+    else {
+      bestTime = JSON.parse(bestTime);
+      bestTimediv.innerHTML = bestTime;
     }
   }
 
   function init() {
     createBoard();
     timeCompleted.innerHTML = time;
+    readBestTime();
     timeInterval = setInterval(() => {
       time++;
-      timeCompleted.innerHTML = time;
+      timeCompleted.innerHTML = time;      
     }, 1000);
   }
 
